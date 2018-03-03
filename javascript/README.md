@@ -1,4 +1,5 @@
-# JS学习总结
+
+
 ### 1.[重绘和重排问题](http://www.cnblogs.com/zichi/p/4720000.html)
 ### 2.add(2,3)和add(2)(3)问题(再考虑他的拓展性拓展)，其实是考察js函数柯里化问题。
 **curry 的概念很简单：只传递给函数一部分参数来调用它，让它返回一个函数去处理剩下的参数。**
@@ -70,7 +71,7 @@ var obj = {
     console.log( this.i, this)
   }
 }
-obj.b(); // prints undefined, Window
+obj.b(); // prints undefined, {}
 obj.c(); // prints 10, Object {...}
 
 ```
@@ -210,6 +211,15 @@ console.log(unique(array));
 ```
 由于indexOf是一个一个进行比较，效率不高。
 可以先对数组进行排序,排序后，相同的值就会被排在一起，然后我们就可以只判断当前元素与上一个元素是否相同，相同就说明重复，不相同就添加进 res。这种方法效率高于使用 indexOf。
+#### 使用ES6新特性 set
+Set类似于数组，但是成员的值都是唯一的，没有重复的值。Set 函数可以接受一个数组
+```
+let array2 = [1, 1, 1, 1, 2, 3, 4, 4, 5, 3];
+let set = new Set(array2); 
+let array3 = Array.from(set)  //Array.from可以将一个Set转换为数组
+console.log(set);
+console.log(array3)
+```
 ### 8.浅拷贝和深拷贝
 ####浅拷贝
 对于数组和对象这种属于引用类型的,如果浅拷贝(例如用 = 直接赋值，或者只遍历第一层 )那么对于复杂的，具有嵌套结构的数据来说，浅拷贝只是拷贝了同一个引用，而这个引用指向存储在堆中的一个对象。拷贝完成后，两个变量实际上将引用同一个对象，如果改变其中一个变量，就会影响另一个变量。
@@ -258,3 +268,33 @@ console.log(newObj)  // { year: 12,arr: [ 1, 2, 3 ],obj: { key: 'value' }, func:
 console.log(newObj2) // [ 1, [ 2, [ 3, 4, [Array] ] ] ]
 
 ```
+### 9.call和apply
+call, apply作用就是借用别人的方法来调用,就像调用自己的一样.
+```
+function A() {
+  this.message = ''
+  this.getMessage = function () {
+    return this.message
+  }
+}
+function B() {
+  this.message = ''
+  this.setMessage = function (message) {
+    this.message = message
+  }
+}
+var a = new A()
+var b = new B();
+//给对象a动态指派b的setMessage方法,注意,a本身是没有这方法的!
+b.setMessage.call(a, "a的消息");
+//下面将显示"a的消息"
+console.log(a.getMessage());  // "a的消息"
+```
+
+区别：
+区分apply,call就一句话,
+
+　　foo.call(this, arg1,arg2,arg3) == foo.apply(this, arguments)==this.foo(arg1, arg2, arg3)
+
+call, apply方法区别是,从第二个参数起, call方法参数将依次传递给借用的方法作参数, 而apply直接将这些参数放到一个数组中再传递, 最后借用方法的参数列表是一样的.
+
